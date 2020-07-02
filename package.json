@@ -2,6 +2,7 @@
   "name": "autobahn-development",
   "description": "Local development package (never pubished) for autobahn and autobahn-xbr library development and CI.",
   "private": true,
+  "version": "0.0.1",
   "engines": {
     "node": ">= 4.2.6"
   },
