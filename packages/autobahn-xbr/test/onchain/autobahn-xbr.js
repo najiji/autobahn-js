@@ -1,1 +1,0 @@
-../../../packages/autobahn-xbr/build/autobahn-xbr.js
