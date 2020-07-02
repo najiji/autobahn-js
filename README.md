@@ -1,3 +1,6 @@
+# Fork:
+Added the possibility to specify headers when using websockets from nodejs
+
 # **Autobahn**|JS
 
 WAMP for Browsers and NodeJS.
