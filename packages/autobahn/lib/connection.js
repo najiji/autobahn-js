@@ -37,7 +37,8 @@ var Connection = function (options) {
          {
             type: 'websocket',
             url: self._options.url,
-            tlsConfiguration: self._options.tlsConfiguration
+            tlsConfiguration: self._options.tlsConfiguration,
+            headers: self._options.headers
          }
       ];
    }
@@ -62,7 +63,7 @@ var Connection = function (options) {
    }
 
    // maximum number of reconnection attempts
-   self._max_retries = typeof self._options.max_retries !== 'undefined' ?  self._options.max_retries : 15;
+   self._max_retries = typeof self._options.max_retries !== 'undefined' ? self._options.max_retries : 15;
 
    // initial retry delay in seconds
    self._initial_retry_delay = typeof self._options.initial_retry_delay !== 'undefined' ? self._options.initial_retry_delay : 1.5;
@@ -115,8 +116,8 @@ Connection.prototype._create_transport = function () {
             return transport;
          }
       } catch (e) {
-          var error_message = "could not create WAMP transport '" + transport_factory.type + "': ";
-          util.handle_error(self._options.on_internal_error, e, error_message);
+         var error_message = "could not create WAMP transport '" + transport_factory.type + "': ";
+         util.handle_error(self._options.on_internal_error, e, error_message);
       }
    }
    log.warn('could not create any WAMP transport');
@@ -126,44 +127,44 @@ Connection.prototype._create_transport = function () {
 
 
 Connection.prototype._init_transport_factories = function () {
-    // WAMP transport
-    //
+   // WAMP transport
+   //
 
-    var self = this;
+   var self = this;
 
-    var transports, transport_options, transport_factory, transport_factory_klass;
+   var transports, transport_options, transport_factory, transport_factory_klass;
 
-    util.assert(this._options.transports, "No transport.factory specified");
-    transports = this._options.transports;
-    //if(typeof transports === "object") {
-    //    this._options.transports = [transports];
-    //}
-    for(var i = 0; i < this._options.transports.length; ++i) {
-        // cascading transports until we find one which works
-        transport_options =  this._options.transports[i];
+   util.assert(this._options.transports, "No transport.factory specified");
+   transports = this._options.transports;
+   //if(typeof transports === "object") {
+   //    this._options.transports = [transports];
+   //}
+   for (var i = 0; i < this._options.transports.length; ++i) {
+      // cascading transports until we find one which works
+      transport_options = this._options.transports[i];
 
-        if (!transport_options.url) {
-            // defaulting to options.url if none is provided
-            transport_options.url = this._options.url;
-        }
-        if (!transport_options.serializers) {
-            transport_options.serializers = this._options.serializers;
-        }
-        if (!transport_options.protocols) {
-            transport_options.protocols = this._options.protocols;
-        }
-        util.assert(transport_options.type, "No transport.type specified");
-        util.assert(typeof transport_options.type === "string", "transport.type must be a string");
-        try {
-            transport_factory_klass = autobahn.transports.get(transport_options.type);
-            if (transport_factory_klass) {
-                transport_factory = new transport_factory_klass(transport_options);
-                this._transport_factories.push(transport_factory);
-            }
-        } catch (exc) {
-            util.handle_error(self._options.on_internal_error, exc);
-        }
-    }
+      if (!transport_options.url) {
+         // defaulting to options.url if none is provided
+         transport_options.url = this._options.url;
+      }
+      if (!transport_options.serializers) {
+         transport_options.serializers = this._options.serializers;
+      }
+      if (!transport_options.protocols) {
+         transport_options.protocols = this._options.protocols;
+      }
+      util.assert(transport_options.type, "No transport.type specified");
+      util.assert(typeof transport_options.type === "string", "transport.type must be a string");
+      try {
+         transport_factory_klass = autobahn.transports.get(transport_options.type);
+         if (transport_factory_klass) {
+            transport_factory = new transport_factory_klass(transport_options);
+            this._transport_factories.push(transport_factory);
+         }
+      } catch (exc) {
+         util.handle_error(self._options.on_internal_error, exc);
+      }
+   }
 };
 
 
@@ -242,13 +243,13 @@ Connection.prototype.open = function () {
    self._autoreconnect_reset();
    self._retry = true;
 
-   function retry () {
+   function retry() {
 
       // create a WAMP transport
       try {
          self._transport = self._create_transport();
       } catch (e) {
-          util.handle_error(self._options.on_internal_error, e);
+         util.handle_error(self._options.on_internal_error, e);
       }
 
       if (!self._transport) {
@@ -291,7 +292,7 @@ Connection.prototype.open = function () {
                details.transport = self._transport.info;
                self.onopen(self._session, details);
             } catch (e) {
-                util.handle_error(self._options.on_user_error, e, "Exception raised from app code while firing Connection.onopen()");
+               util.handle_error(self._options.on_user_error, e, "Exception raised from app code while firing Connection.onopen()");
             }
          }
       };
@@ -450,7 +451,7 @@ Object.defineProperty(Connection.prototype, "transport", {
       if (this._transport) {
          return this._transport;
       } else {
-         return {info: {type: 'none', url: null, protocol: null}};
+         return { info: { type: 'none', url: null, protocol: null } };
       }
    }
 });
